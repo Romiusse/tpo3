@@ -12,7 +12,9 @@ class AuthTest : TestBase() {
             driver.get(BASE_URL)
             val authPage = AuthPage(driver)
             authPage.clickLoginButton()
+            authPage.clickAutoRuButton()
             authPage.enterEmail("test@example.com")
+            authPage.clickNextButton()
             authPage.enterPassword("password123")
             // Проверка успешной авторизации
             assert(driver.currentUrl.contains("profile"))
