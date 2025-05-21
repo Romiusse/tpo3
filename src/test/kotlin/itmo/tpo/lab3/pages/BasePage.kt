@@ -1,5 +1,6 @@
 package itmo.tpo.lab3.pages
 
+import org.openqa.selenium.By
 import org.openqa.selenium.Keys
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.WebElement
@@ -34,5 +35,10 @@ abstract class BasePage(protected val driver: WebDriver) {
         WebDriverWait(driver, Duration.ofSeconds(10))
             .until(ExpectedConditions.visibilityOf(element))
             .sendKeys(Keys.ENTER)
+    }
+
+    protected fun waitAndGetByXpath(string: String): WebElement {
+        return WebDriverWait(driver, Duration.ofSeconds(10))
+            .until(ExpectedConditions.presenceOfElementLocated(By.xpath(string)))
     }
 }

@@ -1,15 +1,17 @@
 package itmo.tpo.lab3.pages
 
 import itmo.tpo.lab3.TestBase
-import org.openqa.selenium.By
-import org.openqa.selenium.WebDriver
-import org.openqa.selenium.WebElement
+import org.openqa.selenium.*
 import org.openqa.selenium.support.FindBy
 
 class PlaceAdPage(driver: WebDriver) : BasePage(driver) {
 
     @FindBy(xpath = "//div[@id='app']/div/div/header/div/div/div[4]/a[2]/div")
     private lateinit var sellButton: WebElement
+
+
+    @FindBy(xpath = "//div[@id='app']/div/div/div/div[4]/div/div[4]/div[2]/div[2]/div[2]/div/div/div/div[2]/div/div/a")
+    private lateinit var contButton: WebElement
 
     @FindBy(xpath = "//div[@id=\'app\']/div/div/div/div[4]/div/div[4]/div[2]/div[2]/div[4]/a/span/span")
     private lateinit var placeAdButton: WebElement
@@ -27,38 +29,40 @@ class PlaceAdPage(driver: WebDriver) : BasePage(driver) {
     @FindBy(xpath = "//input[@name='tech.mark']")
     private lateinit var searchField: WebElement
 
-    @FindBy(xpath = "//div[@id=\\'tech.mark\\']/ul/li/a/div/img")
+    @FindBy(xpath = "//div[@id=\'tech.mark\']/ul/li/a/div/img")
     private lateinit var markButton: WebElement
 
-    private fun submarkButton(itemProp: String): WebElement {
-        return driver.findElement(By.xpath("//a[@itemprop='$itemProp']"))
-    }
+    @FindBy(xpath = "(//input[@name='tech.mark'])[2]")
+    private lateinit var subSearchField: WebElement
+
+    @FindBy(xpath = "//a[@class='Link Link_color_black ModelField__modelsListItem']")
+    private lateinit var subMarkButton: WebElement
 
     /**
      * Характеристики
      */
     private fun yearReleaseButton(year: String): WebElement {
-        return driver.findElement(By.xpath("//span[text()='$year']"))
+        return waitAndGetByXpath("//span[text()=\'$year\']")
     }
 
-    private fun genButton(position: Int): WebElement {
-        return driver.findElement(By.xpath("//div[@id=\'tech.super_gen\']/label[${position}]/span/span"))
+    private fun genButton(gen: String): WebElement {
+        return waitAndGetByXpath("//span[text()='$gen']")
     }
 
     private fun engineButton(position: Int): WebElement {
-        return driver.findElement(By.xpath("//div[@id=\'tech.engine_type\']/div/span[$position]/button/span"))
+        return waitAndGetByXpath("//div[@id=\'tech.engine_type\']/div/span[$position]/button/span")
     }
 
-    private fun transmissionButton(position: Int): WebElement {
-        return driver.findElement(By.xpath("//div[@id=\'tech.transmission\']/div/span[$position]/button/span/div"))
+    private fun transmissionButton(trnsmission: String): WebElement {
+        return waitAndGetByXpath("//div[text()='$trnsmission']")
     }
 
     private fun modificationButton(position: Int): WebElement {
-        return driver.findElement(By.xpath("//div[@id=\'tech.tech_param\']/label[$position]/span/span"))
+        return waitAndGetByXpath("//div[@id=\'tech.tech_param\']/label[$position]/span/span")
     }
 
     private fun colorButton(position: Int): WebElement {
-        return driver.findElement(By.xpath("//div[@id=\'tech.color\']/div[$position]"))
+        return waitAndGetByXpath("//div[@id=\'tech.color\']/div[$position]")
     }
 
     /**
@@ -76,7 +80,7 @@ class PlaceAdPage(driver: WebDriver) : BasePage(driver) {
     /**
      * ПТС
      */
-    @FindBy(xpath = "//div[@id=\'pts.pts_status\']/div[2]/span[3]/button/span/span")
+    @FindBy(xpath = "//span[text()='Нет ПТС']")
     private lateinit var noPtsButton: WebElement
 
     @FindBy(xpath = "//div[@id=\'pts.purchase_date\']/div[2]/div/button")
@@ -86,7 +90,7 @@ class PlaceAdPage(driver: WebDriver) : BasePage(driver) {
     private lateinit var purchaseMonthButton: WebElement
 
     private fun purchaseSelectButton(position: Int): WebElement {
-        return driver.findElement(By.xpath("//div[@class=\'MenuItem MenuItem_size_m MenuItem_hover-color_blue\'][${position}]"))
+        return waitAndGetByXpath("//div[@class=\'MenuItem MenuItem_size_m MenuItem_hover-color_blue\'][${position}]")
     }
 
     /**
@@ -99,11 +103,11 @@ class PlaceAdPage(driver: WebDriver) : BasePage(driver) {
      * ПОВРЕЖДЕНИЯ
      */
     private fun damageSectionButton(position: Int): WebElement {
-        return driver.findElement(By.xpath("//div[@id=\'section-damages\']/div[2]/div/div/div/div[2]/div/div/div[$position]/div"))
+        return waitAndGetByXpath("//div[@id=\'section-damages\']/div[2]/div/div/div/div[2]/div/div/div[$position]/div")
     }
 
     private fun damageSectionSelectButton(position: Int): WebElement {
-        return driver.findElement(By.xpath("//span/label[$position]/span/span"))
+        return waitAndGetByXpath("//span/label[$position]/span/span")
     }
 
     @FindBy(xpath = "//div[2]/div/textarea")
@@ -139,24 +143,51 @@ class PlaceAdPage(driver: WebDriver) : BasePage(driver) {
     @FindBy(xpath = "//div[@id=\'price.exchange\']/label/span/span")
     private lateinit var changeButton: WebElement
 
+    @FindBy(xpath = "//span[text()='Продолжить']")
+    private lateinit var сButton: WebElement
+
+    @FindBy(xpath = "//span[text()='Пропустить']")
+    private lateinit var sButton: WebElement
+
+    @FindBy(xpath = "//a[text()='Закрыть']")
+    private lateinit var closeButton: WebElement
+
+    fun cClick() {
+        waitAndClick(сButton)
+    }
+
+    fun sClick() {
+        waitAndClick(sButton)
+    }
+
+    fun closeClick() {
+        waitAndClick(closeButton)
+    }
+
     fun openPaceAdPage() {
         waitAndClick(sellButton)
         waitAndClick(placeAdButton)
         waitAndClick(handWriteButton)
-        waitAndClick(handWriteButtonSelected)
+    }
+
+    fun openPaceAdPageAgain() {
+        waitAndClick(sellButton)
+        waitAndClick(contButton)
+        driver.switchTo().window(driver.windowHandles.last())
     }
 
     fun fillMarkBlock(mark: String, submark: String) {
         waitAndType(searchField, mark)
         waitAndClick(markButton)
-        waitAndClick(submarkButton(submark))
+        waitAndType(subSearchField, submark)
+        waitAndClick(subMarkButton)
     }
 
     fun fillCharacterBlock(
         yearRelease: String,
-        genType: Int,
+        genType: String,
         engineType: Int,
-        transmissionType: Int,
+        transmissionType: String,
         modificationType: Int,
         colorType: Int
     ) {
@@ -207,6 +238,11 @@ class PlaceAdPage(driver: WebDriver) : BasePage(driver) {
         street: String,
         onlineView: Boolean = false
     ) {
+        waitAndGetElement(cityField).apply {
+            repeat(20) {
+                sendKeys(Keys.BACK_SPACE)
+            }
+        }
         waitAndType(cityField, city)
         waitAndClick(selectCityButton)
         waitAndType(streetField, street)
