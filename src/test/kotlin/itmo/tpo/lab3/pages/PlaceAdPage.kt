@@ -2,26 +2,56 @@ package itmo.tpo.lab3.pages
 
 import itmo.tpo.lab3.TestBase
 import org.openqa.selenium.*
+import org.openqa.selenium.interactions.Actions
 import org.openqa.selenium.support.FindBy
 
 class PlaceAdPage(driver: WebDriver) : BasePage(driver) {
 
-    @FindBy(xpath = "//div[@id='app']/div/div/header/div/div/div[4]/a[2]/div")
-    private lateinit var sellButton: WebElement
 
+    inner class LeftMenu : BasePage(driver) {
+        @FindBy(xpath = "//div[text()='Пробег']")
+        lateinit var probeg: WebElement
 
-    @FindBy(xpath = "//div[@id='app']/div/div/div/div[4]/div/div[4]/div[2]/div[2]/div[2]/div/div/div/div[2]/div/div/a")
+        @FindBy(xpath = "//div[text()='Фото']")
+        lateinit var photo: WebElement
+
+        @FindBy(xpath = "//div[text()='Опции']")
+        lateinit var options: WebElement
+
+        @FindBy(xpath = "//div[text()='ПТС']")
+        lateinit var pts: WebElement
+
+        @FindBy(xpath = "//div[text()='Описание']")
+        lateinit var desc: WebElement
+
+        @FindBy(xpath = "//div[text()='Повреждения']")
+        lateinit var damage: WebElement
+
+        @FindBy(xpath = "//div[text()='Место осмотра']")
+        lateinit var place: WebElement
+
+        @FindBy(xpath = "//div[text()='Цена']")
+        lateinit var price: WebElement
+
+        fun clickprobeg() = waitAndClick(probeg)
+        fun clickPhoto() = waitAndClick(photo)
+        fun clickoptions() = waitAndClick(options)
+        fun clickpts() = waitAndClick(pts)
+        fun clickdesc() = waitAndClick(desc)
+        fun clickdamage() = waitAndClick(damage)
+        fun clickplace() = waitAndClick(place)
+        fun clickprice() = waitAndClick(price)
+
+    }
+
+    @FindBy(xpath = "//a[contains(@class, 'SalesItemTitle_inactiveEditable')]")
     private lateinit var contButton: WebElement
 
-    @FindBy(xpath = "//div[@id=\'app\']/div/div/div/div[4]/div/div[4]/div[2]/div[2]/div[4]/a/span/span")
+    @FindBy(xpath = "//span[text()='Разместить объявление']")
     private lateinit var placeAdButton: WebElement
 
-    @FindBy(xpath = "//div[@id=\'app\']/div/div/div[2]/div/div[3]/span[@class=\'Link OfferInitialScreenCarInfo__handMadeButton-DP9Gg\']")
+    @FindBy(xpath = "//span[text()='Заполню всё вручную']")
     private lateinit var handWriteButton: WebElement
-
-    @FindBy(xpath = "//div[@id='app']/div/div/div[2]/div/div[3]/span[@class='Link Link_hovered OfferInitialScreenCarInfo__handMadeButton-DP9Gg']")
-    private lateinit var handWriteButtonSelected: WebElement
-
 
     /**
      * Марка
@@ -35,7 +65,7 @@ class PlaceAdPage(driver: WebDriver) : BasePage(driver) {
     @FindBy(xpath = "(//input[@name='tech.mark'])[2]")
     private lateinit var subSearchField: WebElement
 
-    @FindBy(xpath = "//a[@class='Link Link_color_black ModelField__modelsListItem']")
+    @FindBy(xpath = "//a[contains(@class, 'ModelField__modelsListItem')]")
     private lateinit var subMarkButton: WebElement
 
     /**
@@ -49,8 +79,8 @@ class PlaceAdPage(driver: WebDriver) : BasePage(driver) {
         return waitAndGetByXpath("//span[text()='$gen']")
     }
 
-    private fun engineButton(position: Int): WebElement {
-        return waitAndGetByXpath("//div[@id=\'tech.engine_type\']/div/span[$position]/button/span")
+    private fun engineButton(engine: String): WebElement {
+        return waitAndGetByXpath("//div[text()='$engine']")
     }
 
     private fun transmissionButton(trnsmission: String): WebElement {
@@ -58,7 +88,7 @@ class PlaceAdPage(driver: WebDriver) : BasePage(driver) {
     }
 
     private fun modificationButton(position: Int): WebElement {
-        return waitAndGetByXpath("//div[@id=\'tech.tech_param\']/label[$position]/span/span")
+        return waitAndGetByXpath("//div[@id='tech.tech_param']/label[$position]/span/span")
     }
 
     private fun colorButton(position: Int): WebElement {
@@ -153,10 +183,12 @@ class PlaceAdPage(driver: WebDriver) : BasePage(driver) {
     private lateinit var closeButton: WebElement
 
     fun cClick() {
+        Actions(driver).scrollByAmount(0, 300).perform()
         waitAndClick(сButton)
     }
 
     fun sClick() {
+        Actions(driver).scrollByAmount(0, 300).perform()
         waitAndClick(sButton)
     }
 
@@ -165,13 +197,11 @@ class PlaceAdPage(driver: WebDriver) : BasePage(driver) {
     }
 
     fun openPaceAdPage() {
-        waitAndClick(sellButton)
         waitAndClick(placeAdButton)
         waitAndClick(handWriteButton)
     }
 
     fun openPaceAdPageAgain() {
-        waitAndClick(sellButton)
         waitAndClick(contButton)
         driver.switchTo().window(driver.windowHandles.last())
     }
@@ -185,18 +215,18 @@ class PlaceAdPage(driver: WebDriver) : BasePage(driver) {
 
     fun fillCharacterBlock(
         yearRelease: String,
-        genType: String,
-        engineType: Int,
-        transmissionType: String,
-        modificationType: Int,
-        colorType: Int
+        genType: String? = null,
+        engineType: String? = null,
+        transmissionType: String? = null,
+        modificationType: Int? = null,
+        colorType: Int? = null,
     ) {
         waitAndClick(yearReleaseButton(yearRelease))
-        waitAndClick(genButton(genType))
-        waitAndClick(engineButton(engineType))
-        waitAndClick(transmissionButton(transmissionType))
-        waitAndClick(modificationButton(modificationType))
-        waitAndClick(colorButton(colorType))
+        genType?.let { waitAndClick(genButton(it)) }
+        engineType?.let { waitAndClick(engineButton(it)) }
+        transmissionType?.let { waitAndClick(transmissionButton(it)) }
+        modificationType?.let { waitAndClick(modificationButton(it)) }
+        colorType?.let { waitAndClick(colorButton(it)) }
     }
 
     fun fillMileageBlock(mileage: String) {
@@ -259,5 +289,13 @@ class PlaceAdPage(driver: WebDriver) : BasePage(driver) {
         if (withExchange) {
             waitAndClick(changeButton)
         }
+    }
+
+    fun getDraftTitle(): String {
+        return waitAndGetElement(contButton).text
+    }
+
+    companion object {
+        const val URL = "https://auto.ru/my/all/"
     }
 }

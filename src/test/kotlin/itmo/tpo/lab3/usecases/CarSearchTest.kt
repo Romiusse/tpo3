@@ -1,78 +1,73 @@
 package itmo.tpo.lab3.usecases
 
-import itmo.tpo.lab3.BASE_URL
 import itmo.tpo.lab3.TestBase
 import itmo.tpo.lab3.pages.SearchPage
+import jdk.jfr.Description
 import org.junit.jupiter.api.Test
 
 class CarSearchTest: TestBase() {
 
     @Test
+    @Description("Проверка поиска по марке")
     fun testSearch() {
         val query = "BMW X5"
-
-        drivers.forEach { driver ->
-            driver.get(BASE_URL);
+        beginTest(SearchPage.URL) { driver ->
             val searchPage = SearchPage(driver)
             searchPage.clickSearchButton()
             searchPage.inputQuery(query)
             searchPage.pressEnterQueryButton()
-            val result = searchPage.getResult()
+            val result = searchPage.PredictElement(1).getResult()
             assert(result.text.contains(query))
         }
     }
 
     @Test
+    @Description("Проверка поиска по цвету")
     fun testSearchByColor() {
         val query = "красный"
-
-        drivers.forEach { driver ->
-            driver.get(BASE_URL);
+        beginTest(SearchPage.URL) { driver ->
             val searchPage = SearchPage(driver)
             searchPage.clickSearchButton()
             searchPage.inputQuery(query)
             searchPage.pressEnterQueryButton()
-            val result = searchPage.getColor()
+            val result = searchPage.PredictElement(1).getColor()
             assert(result.text.contains(query))
         }
     }
 
     @Test
+    @Description("Проверка поиска по типу кузова")
     fun testSearchByType() {
         val query = "седан"
-
-        drivers.forEach { driver ->
-            driver.get(BASE_URL);
+        beginTest(SearchPage.URL) { driver ->
             val searchPage = SearchPage(driver)
             searchPage.clickSearchButton()
             searchPage.inputQuery(query)
             searchPage.pressEnterQueryButton()
-            val result = searchPage.getType()
+            val result = searchPage.PredictElement(1).getType()
             assert(result.text.contains(query))
         }
     }
 
     @Test
+    @Description("Проверка поиска по году выпуска")
     fun testSearchByYear() {
         val query = "2000"
-
-        drivers.forEach { driver ->
-            driver.get(BASE_URL);
+        beginTest(SearchPage.URL) { driver ->
             val searchPage = SearchPage(driver)
             searchPage.clickSearchButton()
             searchPage.inputQuery(query)
             searchPage.pressEnterQueryButton()
-            val result = searchPage.getYear()
+            val result = searchPage.PredictElement(1).getYear()
             assert(result.text.contains(query))
         }
     }
 
     @Test
+    @Description("Проверка невалидных данных")
     fun testSearchInvalid() {
         val query = "werweqtiqewugoihgwe"
-
-        drivers.forEach { driver ->
-            driver.get(BASE_URL);
+        beginTest(SearchPage.URL) { driver ->
             val searchPage = SearchPage(driver)
             searchPage.clickSearchButton()
             searchPage.inputQuery(query)
